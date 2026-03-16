@@ -4,7 +4,7 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(120)
-  name: string;
+  name!: string;
 
   @IsString()
   @IsOptional()
@@ -12,5 +12,5 @@ export class CreateProductDto {
 
   @IsNumber()
   @Min(0)
-  price: number;
+  price!: number;
 }

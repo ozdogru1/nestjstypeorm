@@ -3,20 +3,20 @@
 @Entity({ name: 'products' })
 export class Product {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ length: 120 })
-  name: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
   description?: string | null;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  price: number;
+  price!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }
