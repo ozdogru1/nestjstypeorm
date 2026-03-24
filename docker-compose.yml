@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  app:
+    build: .
+    container_name: nest-app
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: mysql-container
+    depends_on:
+      - mysql
+    volumes:
+      - .:/app
+      - /app/node_modules
+
   mysql:
     image: mysql:8.0
     container_name: mysql-container
