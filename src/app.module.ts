@@ -1,12 +1,16 @@
-﻿import { Module } from '@nestjs/common';
+﻿import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { WinstonModule } from 'nest-winston';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
+import { LoggerMiddleware } from './middleware/logger.middleware';
+import { winstonConfig } from './logger/winston.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    WinstonModule.forRoot(winstonConfig),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -25,4 +29,10 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes('*');
+  }
+}

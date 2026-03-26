@@ -2,6 +2,8 @@ import 'reflect-metadata';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './filters/http-exception.filter';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +12,11 @@ async function bootstrap() {
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   });
+
+  const logger = app.get(WINSTON_MODULE_PROVIDER);
+  console.log = (...args) => logger.info(args.join(' '));
+  console.error = (...args) => logger.error(args.join(' '));
+  app.useGlobalFilters(new AllExceptionsFilter(logger));
 
   app.useGlobalPipes(
     new ValidationPipe({

@@ -11,8 +11,12 @@ services:
       - .env
     environment:
       DB_HOST: nestjs-mysql
+      NODE_ENV: production
+      DB_PORT: 3306
     depends_on:
       - mysql
+    volumes:
+      - /var/log/nestjs:/app/logs
 
   mysql:
     image: mysql:8.0
