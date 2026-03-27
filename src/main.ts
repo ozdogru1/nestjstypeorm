@@ -4,6 +4,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filters/http-exception.filter';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { TransactionInterceptor } from './common/interceptors/transaction.interceptor';
+import { DataSource } from 'typeorm';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +14,9 @@ async function bootstrap() {
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   });
+
+  const dataSource = app.get(DataSource);
+  app.useGlobalInterceptors(new TransactionInterceptor(dataSource));
 
   const logger = app.get(WINSTON_MODULE_PROVIDER);
   console.log = (...args) => logger.info(args.join(' '));
