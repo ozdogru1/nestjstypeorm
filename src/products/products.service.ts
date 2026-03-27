@@ -2,27 +2,31 @@
 import { Product } from './product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductsRepository } from './products.repository';
+import { TransactionalRepository } from '../common/transaction/transactional-repository.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
-    private readonly productsRepository: ProductsRepository,
+    private readonly transactionalRepository: TransactionalRepository,
   ) {}
 
+  private repository() {
+    return this.transactionalRepository.getRepository(Product);
+  }
+
   async create(dto: CreateProductDto) {
-    const product = await this.productsRepository.save(dto);
+    const product = await this.repository().save(dto);
     //const obj = null;
     //console.log(obj.name);
     return product;
   }
 
   findAll() {
-    return this.productsRepository.find();
+    return this.repository().find();
   }
 
   async findOne(id: number) {
-    const entity = await this.productsRepository.findOne({ where: { id } });
+    const entity = await this.repository().findOne({ where: { id } });
     if (!entity) {
       throw new NotFoundException(`Product ${id} not found`);
     }
@@ -31,13 +35,13 @@ export class ProductsService {
 
   async update(id: number, dto: UpdateProductDto) {
     await this.findOne(id);
-    await this.productsRepository.update({ id }, dto);
+    await this.repository().update({ id }, dto);
     return this.findOne(id);
   }
 
   async remove(id: number) {
     await this.findOne(id);
-    await this.productsRepository.delete({ id });
+    await this.repository().delete({ id });
     return { deleted: true };
   }
 }

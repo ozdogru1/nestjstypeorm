@@ -6,6 +6,7 @@ import { AllExceptionsFilter } from './filters/http-exception.filter';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { TransactionInterceptor } from './common/interceptors/transaction.interceptor';
 import { DataSource } from 'typeorm';
+import { TransactionContext } from './common/transaction/transaction-context';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,7 +17,10 @@ async function bootstrap() {
   });
 
   const dataSource = app.get(DataSource);
-  app.useGlobalInterceptors(new TransactionInterceptor(dataSource));
+  const transactionContext = app.get(TransactionContext);
+  app.useGlobalInterceptors(
+    new TransactionInterceptor(dataSource, transactionContext),
+  );
 
   const logger = app.get(WINSTON_MODULE_PROVIDER);
   console.log = (...args) => logger.info(args.join(' '));

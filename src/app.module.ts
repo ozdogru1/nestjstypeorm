@@ -6,6 +6,7 @@ import { ProductsModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { winstonConfig } from './logger/winston.config';
+import { TransactionModule } from './common/transaction/transaction.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { winstonConfig } from './logger/winston.config';
       }),
       inject: [ConfigService],
     }),
+    TransactionModule,
     ProductsModule,
     AuthModule,
   ],
