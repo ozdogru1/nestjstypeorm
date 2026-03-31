@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { QueryRunner } from 'typeorm';
+import { Prisma } from '@prisma/client';
 import { AsyncLocalStorage } from 'async_hooks';
 
 @Injectable()
 export class TransactionContext {
-  private readonly storage = new AsyncLocalStorage<QueryRunner>();
+  private readonly storage = new AsyncLocalStorage<Prisma.TransactionClient>();
 
-  run<T>(queryRunner: QueryRunner, callback: () => T): T {
-    return this.storage.run(queryRunner, callback);
+  run<T>(client: Prisma.TransactionClient, callback: () => T): T {
+    return this.storage.run(client, callback);
   }
 
-  getQueryRunner(): QueryRunner | undefined {
+  getClient(): Prisma.TransactionClient | undefined {
     return this.storage.getStore();
   }
 }

@@ -5,37 +5,26 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { from, lastValueFrom, Observable } from 'rxjs';
-import { DataSource, QueryRunner } from 'typeorm';
 import { TransactionContext } from '../transaction/transaction-context';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class TransactionInterceptor implements NestInterceptor {
   constructor(
-    private readonly dataSource: DataSource,
+    private readonly prisma: PrismaService,
     private readonly transactionContext: TransactionContext,
   ) {}
 
-  async intercept(
+  intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Promise<Observable<any>> {
-    const queryRunner: QueryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
+  ): Observable<any> {
     return from(
-      this.transactionContext.run(queryRunner, async () => {
-        try {
-          const result = await lastValueFrom(next.handle());
-          await queryRunner.commitTransaction();
-          return result;
-        } catch (error) {
-          await queryRunner.rollbackTransaction();
-          throw error;
-        } finally {
-          await queryRunner.release();
-        }
-      }),
+      this.prisma.$transaction(async (tx) =>
+        this.transactionContext.run(tx, async () => {
+          return await lastValueFrom(next.handle());
+        }),
+      ),
     );
   }
 }

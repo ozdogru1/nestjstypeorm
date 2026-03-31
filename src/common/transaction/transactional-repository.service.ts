@@ -1,27 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import {
-  DataSource,
-  EntityTarget,
-  ObjectLiteral,
-  Repository,
-} from 'typeorm';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaService } from '../../prisma/prisma.service';
 import { TransactionContext } from './transaction-context';
 
 @Injectable()
 export class TransactionalRepository {
   constructor(
-    private readonly dataSource: DataSource,
+    private readonly prisma: PrismaService,
     private readonly transactionContext: TransactionContext,
   ) {}
 
-  getRepository<T extends ObjectLiteral>(
-    entity: EntityTarget<T>,
-  ): Repository<T> {
-    const queryRunner = this.transactionContext.getQueryRunner();
-    if (queryRunner) {
-      return queryRunner.manager.getRepository(entity);
+  getClient(): Prisma.TransactionClient | PrismaClient {
+    const client = this.transactionContext.getClient();
+    if (client) {
+      return client;
     }
-    return this.dataSource.getRepository(entity);
+    return this.prisma;
   }
-
 }
