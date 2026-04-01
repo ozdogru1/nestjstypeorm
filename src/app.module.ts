@@ -1,4 +1,4 @@
-﻿import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { ProductsModule } from './products/products.module';
@@ -9,6 +9,8 @@ import { TransactionModule } from './common/transaction/transaction.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MeilisearchModule } from './meilisearch/meilisearch.module';
 import { CategoriesModule } from './categories/categories.module';
+import { AppController } from './app.controller';
+import { HttpClientService } from './http/http-client.service';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { CategoriesModule } from './categories/categories.module';
     CategoriesModule,
     AuthModule,
   ],
+  controllers: [AppController],
+  providers: [HttpClientService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
