@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TransactionContext } from './transaction-context';
 
@@ -10,7 +10,7 @@ export class TransactionalRepository {
     private readonly transactionContext: TransactionContext,
   ) {}
 
-  getClient(): Prisma.TransactionClient | PrismaClient {
+  getClient(): Prisma.TransactionClient {
     const client = this.transactionContext.getClient();
     if (client) {
       return client;

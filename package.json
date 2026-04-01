@@ -10,7 +10,8 @@
     "start:prod": "node dist/main.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:deploy": "prisma migrate deploy"
+    "prisma:deploy": "prisma migrate deploy",
+    "meili:sync": "ts-node src/meilisearch/meilisearch-sync.command.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.8",
@@ -24,6 +25,7 @@
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "meilisearch": "^0.27.0",
     "nest-winston": "^1.10.2",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

@@ -7,14 +7,18 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { winstonConfig } from './logger/winston.config';
 import { TransactionModule } from './common/transaction/transaction.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { MeilisearchModule } from './meilisearch/meilisearch.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     WinstonModule.forRoot(winstonConfig),
+    MeilisearchModule,
     PrismaModule,
     TransactionModule,
     ProductsModule,
+    CategoriesModule,
     AuthModule,
   ],
 })
