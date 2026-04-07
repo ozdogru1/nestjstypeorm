@@ -11,7 +11,7 @@ export class HttpClientService {
   constructor(
     @Inject(REQUEST) private readonly request: Request,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   private headerValue(name: 'authorization' | 'cookie'): string | undefined {
     const v = this.request.headers[name];
@@ -61,14 +61,12 @@ export class HttpClientService {
       return res.data as T;
     }
 
+    const mappedStatus =
+      status >= 400 && status < 500 ? status : HttpStatus.BAD_GATEWAY;
+
     throw new HttpException(
-      {
-        message: 'Ecommerce API responded with an error',
-        url: urlStr,
-        status,
-        data: res.data,
-      },
-      HttpStatus.BAD_GATEWAY,
+      'Ecommerce API responded with an error',
+      mappedStatus,
     );
   }
 }
