@@ -77,18 +77,26 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             }
 
             // Diğer HttpException'lar
+            const errorCode = this.getErrorCodeByStatus(status);
+
             const errorResponse = {
                 success: false,
                 statusCode: status,
-                errorCode: ErrorCodes.INTERNAL_SERVER_ERROR,
-                message: exception.message,
+                errorCode,
+                message: exceptionResponse.message ?? exception.message,
                 timestamp,
                 path,
             };
 
-            this.logger.warn(
-                `${request.method} ${path} ${status} | ${exception.message}`,
-            );
+            if (status >= 500) {
+                this.logger.error(
+                    `${request.method} ${path} ${status} | ${exception.message}`,
+                );
+            } else {
+                this.logger.warn(
+                    `${request.method} ${path} ${status} | ${exception.message}`,
+                );
+            }
 
             return response.status(status).json(errorResponse);
         }
@@ -111,6 +119,25 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             timestamp,
             path,
         });
+    }
+
+    private getErrorCodeByStatus(status: number): string {
+        switch (status) {
+            case HttpStatus.BAD_REQUEST:
+                return ErrorCodes.VALIDATION_ERROR;
+            case HttpStatus.UNAUTHORIZED:
+                return ErrorCodes.UNAUTHORIZED;
+            case HttpStatus.FORBIDDEN:
+                return ErrorCodes.FORBIDDEN;
+            case HttpStatus.NOT_FOUND:
+                return ErrorCodes.NOT_FOUND;
+            case HttpStatus.CONFLICT:
+                return ErrorCodes.CONFLICT;
+            case HttpStatus.UNPROCESSABLE_ENTITY:
+                return ErrorCodes.VALIDATION_ERROR;
+            default:
+                return ErrorCodes.INTERNAL_SERVER_ERROR;
+        }
     }
 
     private handlePrismaError(
