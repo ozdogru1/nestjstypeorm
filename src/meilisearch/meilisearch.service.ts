@@ -72,8 +72,6 @@ export class MeilisearchService implements OnModuleInit {
     }
 
     const index = this.client.index(indexName);
-    await index.updateFilterableAttributes(['categoryId']);
-    await index.updateSortableAttributes(['price', 'createdAt', 'name']);
   }
 }
 

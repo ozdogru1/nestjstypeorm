@@ -14,14 +14,11 @@ async function bootstrap() {
 
   console.log('Dinamik sync başlıyor...');
 
-  const allowedModels = ['product', 'categories'];
-
   const models = Object.keys(prisma).filter(
     (key) =>
       !key.startsWith('_') &&
       !key.startsWith('$') &&
-      typeof (prisma as any)[key] === 'object' &&
-      allowedModels.includes(key),
+      typeof (prisma as any)[key] === 'object',
   );
 
   console.log(`Tespit edilen tablolar: ${models.join(', ')}`);

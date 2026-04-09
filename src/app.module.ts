@@ -2,13 +2,11 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
-import { ProductsModule } from './products/products.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { winstonConfig } from './logger/winston.config';
 import { TransactionModule } from './common/transaction/transaction.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MeilisearchModule } from './meilisearch/meilisearch.module';
-import { CategoriesModule } from './categories/categories.module';
 import { AppController } from './app.controller';
 import { HttpClientService } from './http/http-client.service';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -29,8 +27,6 @@ import { EcommerceProfileGuard } from './http/ecommerce-profile.guard';
     MeilisearchModule,
     PrismaModule,
     TransactionModule,
-    ProductsModule,
-    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [

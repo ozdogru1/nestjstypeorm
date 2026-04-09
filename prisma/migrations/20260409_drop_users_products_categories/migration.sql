@@ -1,0 +1,8 @@
+-- Drop unused tables
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `products`;
+DROP TABLE IF EXISTS `categories`;
+DROP TABLE IF EXISTS `users`;
+
+SET FOREIGN_KEY_CHECKS = 1;
